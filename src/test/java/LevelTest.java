@@ -39,7 +39,7 @@ class LevelTest {
 
     int size = board.getSize();
 
-    assertEquals(5, size);
+    assertEquals(20, size);
   }
 
   @Test
@@ -47,7 +47,7 @@ class LevelTest {
     Level board = new Level();
 
     try {
-      board.getCell(5, 5);
+      board.getCell(20, 20);
     } catch (IndexOutOfBoundsException e) {
       assertEquals("Cell index out of bounds", e.getMessage());
     }
