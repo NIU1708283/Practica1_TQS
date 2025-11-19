@@ -24,5 +24,18 @@ public class GameTest {
         assertEquals(0, game.getPlayerY(), "Player Y position should be updated");
     }
 
+    @Test
+    void testPlayerMoveLightsUpNewTile() { // comprova que quan es mou a una nova casella, aquesta s'il·lumina
+        Game game = new Game();
+        game.startNewGame();
+        game.setPlayerPosition(5, 5); // Starting position
+        game.movePlayer(Direction.RIGHT); // Move to a new tile
+
+        boolean lightResult = game.lightsUp(game.getPlayerX(), game.getPlayerY()); // Assume the tile lights up successfully
+        
+        assertTrue(lightResult, "The new tile should light up");
+
+    }
+
 }
 
