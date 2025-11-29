@@ -1,35 +1,60 @@
+import java.util.HashSet; // para almacenar muros que van entre casillas
+import java.util.Set;
+
 public final class Level {
-    private final int size = 20; // Tauler de joc de 20x20
+    public static final int SIZE = 20; // tamaño fijo invariable del tablero 20x20
     private final char[][] board;
-    
+    private final Set<String> walls;
+
     public Level() {
-        board = new char[size][size];
+        board = new char[SIZE][SIZE];
+        walls = new HashSet<>();
         reset();
     }
     
     public char getCell(int row, int col) {
-        if (row < 0 || row >= size || col < 0 || col >= size) {
+        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
         throw new IndexOutOfBoundsException("Cell index out of bounds");
         }
         return board[row][col];
     }
     
     public void setCell(int row, int col, char value) {
-        if (row < 0 || row >= size || col < 0 || col >= size) {
+        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
         throw new IndexOutOfBoundsException("Cell index out of bounds");
         }
         board[row][col] = value;
     }
     
     public void reset() {
-        for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            board[i][j] = 'O';
-        }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                board[i][j] = 'O';
+            }
         }
     }
     
     public int getSize() {
-        return size;
+        return SIZE;
     }
+    
+    // para añadir muro entre dos celdas adyacentes
+    public void addWall(int x1, int y1, int x2, int y2) {
+        walls.add(getWallKey(x1, y1, x2, y2));
+    }
+
+    public boolean hasWall(int x1, int y1, int x2, int y2) {
+        return walls.contains(getWallKey(x1, y1, x2, y2));
+    }
+
+    // para generar una clave única para la conexión entre dos celdas
+    private String getWallKey(int x1, int y1, int x2, int y2) {
+        // Ordenamos las coordenadas para que el muro sea bidireccional (que "0,0-1,0" sea lo mismo que "1,0-0,0")
+        if (x1 < x2 || (x1 == x2 && y1 < y2)) {
+            return x1 + "," + y1 + "-" + x2 + "," + y2;
+        }
+        return x2 + "," + y2 + "-" + x1 + "," + y1;
+    }
+
+
 }

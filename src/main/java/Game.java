@@ -29,7 +29,10 @@ public class Game
             case LEFT -> nextX -= 1;
             case RIGHT -> nextX += 1;
         }
-
+        // comprobamos si hay muro entre la posición actual y la siguiente
+        if (level.hasWall(positionX, positionY, nextX, nextY)) {
+            return false; // movimiento bloqueado por muro
+        }
         // comprobamos límites del tablero
         if (nextX < 0 || nextX >= level.getSize() || nextY < 0 || nextY >= level.getSize()) {
             return false; // no se puede (choca con borde del mapa)
