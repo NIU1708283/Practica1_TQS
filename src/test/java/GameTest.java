@@ -31,9 +31,9 @@ public class GameTest {
         game.setPlayerPosition(5, 5); // Starting position
         game.movePlayer(Direction.RIGHT); // Move to a new tile
 
-        boolean lightResult = game.lightsUp(game.getPlayerX(), game.getPlayerY()); // Assume the tile lights up successfully
+        boolean isLit = game.isTileLit(6, 5); // Assume the tile lights up successfully
         
-        assertTrue(lightResult, "The new tile should light up");
+        assertTrue(isLit, "The new tile should light up");
 
     }
 
