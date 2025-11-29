@@ -111,6 +111,21 @@ public class GameTest {
             "Llegar a la salida sin iluminar todo debe resultar en derrota incompleta");
     }
 
+    @Test
+    void testMovementBlockedByLockWithoutKey() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
 
+        // ponemos un Candado ('L') a la derecha del jugador (1, 0)
+        level.setCell(1, 0, 'L');
+        game.setPlayerPosition(0, 0);
+
+        boolean moveResult = game.movePlayer(Direction.RIGHT);
+
+        // el movimiento debe fallar porque no tenemos llave
+        assertFalse(moveResult, "El jugador no debería poder moverse a una casilla con candado sin la llave");
+        assertEquals(0, game.getPlayerX(), "La posición X no debería cambiar");
+    }
 }
 
