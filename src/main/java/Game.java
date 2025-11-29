@@ -19,7 +19,6 @@ public class Game
     }
 
     public boolean movePlayer(Direction direction) {
-        // calculamos la posible nueva posición 
         int nextX = positionX;
         int nextY = positionY;
 
@@ -29,13 +28,22 @@ public class Game
             case LEFT -> nextX -= 1;
             case RIGHT -> nextX += 1;
         }
-        // comprobamos si hay muro entre la posición actual y la siguiente
+        // muros
         if (level.hasWall(positionX, positionY, nextX, nextY)) {
             return false; // movimiento bloqueado por muro
         }
-        // comprobamos límites del tablero
+        // límites 
         if (nextX < 0 || nextX >= level.getSize() || nextY < 0 || nextY >= level.getSize()) {
             return false; // no se puede (choca con borde del mapa)
+        }
+        
+        char targetCell = level.getCell(nextX, nextY);
+
+        // candado
+        if (targetCell == 'L') {
+            // aquí comprobaremos el inventario más adelante.
+            // por ahora, siempre devolvemos false (bloqueado).
+            return false;
         }
 
         // comprobamos si la casilla YA está iluminada 
