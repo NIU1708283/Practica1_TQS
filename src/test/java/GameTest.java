@@ -37,5 +37,20 @@ public class GameTest {
 
     }
 
+    @Test
+    void testSteppingOnLitTileCausesGameOver() {
+        Game game = new Game();
+        game.startNewGame();
+        game.setPlayerPosition(10, 10);
+
+        game.movePlayer(Direction.RIGHT);
+        game.movePlayer(Direction.LEFT);
+        game.movePlayer(Direction.RIGHT);
+
+        // El estado debería ser de derrota por sobrecalentamiento
+        assertEquals(GameStatus.LOST_OVERHEAT, game.getStatus(), "El jugador debería perder al pisar una casilla ya iluminada");
+    }
+
+
 }
 
