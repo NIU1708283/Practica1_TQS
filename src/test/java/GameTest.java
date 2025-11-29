@@ -38,7 +38,7 @@ public class GameTest {
     }
 
     @Test
-    void testSteppingOnLitTileCausesGameOver() {
+    void testSteppingOnLitTileCausesGameOver() { //
         Game game = new Game();
         game.startNewGame();
         game.setPlayerPosition(10, 10);
@@ -47,8 +47,25 @@ public class GameTest {
         game.movePlayer(Direction.LEFT);
         game.movePlayer(Direction.RIGHT);
 
-        // El estado debería ser de derrota por sobrecalentamiento
+        // el estado debería ser de derrota por sobrecalentamiento
         assertEquals(GameStatus.LOST_OVERHEAT, game.getStatus(), "El jugador debería perder al pisar una casilla ya iluminada");
+    }
+
+    @Test
+    void testMovementBlockedByWall() {
+        Game game = new Game();
+        game.startNewGame();
+        game.setPlayerPosition(0, 0);
+
+        // ponemos un muro vertical entre (0,0) y (1,0) (a la derecha del jugador)
+        game.getLevel().addWall(0, 0, 1, 0);
+
+        // intentamos mover a la derecha
+        boolean moveResult = game.movePlayer(Direction.RIGHT);
+
+        assertFalse(moveResult, "El movimiento debería fallar pq hay un muro");
+        assertEquals(0, game.getPlayerX(), "El jugador no debería haber cambiado de X");
+        assertEquals(0, game.getPlayerY(), "El jugador no debería haber cambiado de Y");
     }
 
 
