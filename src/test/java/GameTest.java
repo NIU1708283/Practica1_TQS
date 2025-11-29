@@ -95,5 +95,22 @@ public class GameTest {
         
         assertEquals(GameStatus.WON, game.getStatus(), "El juego debería ganarse al llegar a la salida con todo iluminado");
     }
+
+    @Test
+    void testIncompleteLevelFails() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
+
+        level.setExit(0, 1);
+        game.setPlayerPosition(0, 0);
+        game.movePlayer(Direction.DOWN); // (0,0) -> (0,1)
+
+        // el estado debe ser LOST_INCOMPLETE porque quedan casillas oscuras en el mapa
+        assertEquals(GameStatus.LOST_INCOMPLETE, game.getStatus(), 
+            "Llegar a la salida sin iluminar todo debe resultar en derrota incompleta");
+    }
+
+
 }
 
