@@ -5,11 +5,14 @@ public final class Level {
     public static final int SIZE = 20; // tamaño fijo invariable del tablero 20x20
     private final char[][] board;
     private final Set<String> walls;
+    private int exitX = -1;
+    private int exitY = -1;
 
     public Level() {
         board = new char[SIZE][SIZE];
         walls = new HashSet<>();
         reset();
+        
     }
     
     public char getCell(int row, int col) {
@@ -38,6 +41,27 @@ public final class Level {
         return SIZE;
     }
     
+    public void setExit(int x, int y) {
+        this.exitX = x;
+        this.exitY = y;
+    }
+
+    public boolean isExit(int x, int y) {
+        return x == exitX && y == exitY;
+    }
+
+    // comprueba si queda alguna casilla oscura en el tablero
+    public boolean hasUnlitTiles() {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (board[i][j] == 'O') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // para añadir muro entre dos celdas adyacentes
     public void addWall(int x1, int y1, int x2, int y2) {
         walls.add(getWallKey(x1, y1, x2, y2));

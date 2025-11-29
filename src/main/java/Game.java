@@ -53,6 +53,15 @@ public class Game
         positionY = nextY;
         level.setCell(positionX, positionY, '*');
         
+        // comprobar condición de Victoria o Derrota incompleta
+        if (level.isExit(positionX, positionY)) {
+            if (!level.hasUnlitTiles()) {
+                status = GameStatus.WON;
+            } else {
+                status = GameStatus.LOST_INCOMPLETE;
+            }
+        }
+
         return true;
     }
 
