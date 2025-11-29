@@ -3,12 +3,13 @@ public class Game
     private int positionX;
     private int positionY;
     private Level level; // Añadimos la referencia al nivel (tablero del juego, q va del 1 al 5)
+    private GameStatus status; // Nuevo campo para el estado del juego
 
     public void startNewGame() {
         positionX = 0;
         positionY = 0;
         level = new Level(); // Inicializamos el tablero
-        level.setCell(positionX, positionY, '*'); // iluminar la casilla inicial
+        status = GameStatus.PLAYING; // Estado inicial
     }
 
     public void setPlayerPosition(int x, int y) {
@@ -18,41 +19,50 @@ public class Game
     }
 
     public boolean movePlayer(Direction direction) {
+        // calculamos la posible nueva posición 
+        int nextX = positionX;
+        int nextY = positionY;
+
         switch (direction) {
-            case UP -> positionY -= 1;
-            case DOWN -> positionY += 1;
-            case LEFT -> positionX -= 1;
-            case RIGHT -> positionX += 1;
-        }
-        
-        // Lógica de Iluminación:
-        // Marcamos la casilla actual en el nivel con '*' (representación de luz)
-        try {
-            level.setCell(positionX, positionY, '*');
-        } catch (IndexOutOfBoundsException e) {
-            // por si nos salimos del mapa, por ahora pasamos y simplemente devolvemos false
-            // (se tratará en futuros tests de límites/muros)
-            return false;
+            case UP -> nextY -= 1;
+            case DOWN -> nextY += 1;
+            case LEFT -> nextX -= 1;
+            case RIGHT -> nextX += 1;
         }
 
-        return true; 
+        // comprobamos límites del tablero
+        if (nextX < 0 || nextX >= level.getSize() || nextY < 0 || nextY >= level.getSize()) {
+            return false; // no se puede (choca con borde del mapa)
+        }
+
+        // comprobamos si la casilla YA está iluminada 
+        if (level.getCell(nextX, nextY) == '*') {
+            status = GameStatus.LOST_OVERHEAT; // ¡Game Over!
+            // movemos al jugador a la casilla de muerte
+            positionX = nextX;
+            positionY = nextY;
+            return true;
+            // se añadirá cierto delay para q el jugador vea donde ha muerto
+        }
+
+        // si está todo bien, movemos y actualizamos
+        positionX = nextX;
+        positionY = nextY;
+        level.setCell(positionX, positionY, '*');
+        
+        return true;
     }
 
-    // Método auxiliar para el test y la vista
     public boolean isTileLit(int x, int y) {
         return level.getCell(x, y) == '*';
     }
 
-    public int getPlayerX() {
-        return positionX;
+    public GameStatus getStatus() {
+        return status;
     }
 
-    public int getPlayerY() {
-        return positionY;
-    }
-    
-    // Getter útil para tests futuros
-    public Level getLevel() {
-        return level;
-    }
+    // Getters
+    public int getPlayerX() { return positionX; }
+    public int getPlayerY() { return positionY; }
+    public Level getLevel() { return level; }
 }

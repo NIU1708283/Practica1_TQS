@@ -8,7 +8,7 @@ public class GameTest {
     
     @BeforeEach
     void setUp() {
-        // Setup code if needed before each test
+        // Configuración previa a cada prueba si es necesaria
     }
 
     @Test
