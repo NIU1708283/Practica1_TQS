@@ -145,6 +145,26 @@ public class GameTest {
         assertEquals('*', level.getCell(1, 0), "La casilla de la llave debería estar ahora iluminada");
     }
 
+    @Test
+    void testPlayerOpensLockWithKey() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
+
+        // posiciones: Jugador(0,0) -> Llave(1,0) -> Candado(2,0)
+        game.setPlayerPosition(0, 0);
+        level.setCell(1, 0, 'K');
+        level.setCell(2, 0, 'L');
+
+        game.movePlayer(Direction.RIGHT); // jugador en (1,0), Llaves: 1
+        boolean moveResult = game.movePlayer(Direction.RIGHT); // jugador intenta ir a (2,0)
+
+        assertTrue(moveResult, "El jugador debería poder moverse al candado si tiene llave");
+        assertEquals(2, game.getPlayerX(), "El jugador debería estar sobre la casilla del candado");
+        assertEquals(0, game.getKeysCollected(), "Se debería haber gastado 1 llave");
+        assertEquals('*', level.getCell(2, 0), "El candado debería reemplazarse por luz");
+    }
+
 
 }
 
