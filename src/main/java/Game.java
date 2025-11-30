@@ -2,14 +2,16 @@ public class Game
 {
     private int positionX;
     private int positionY;
-    private Level level; // Añadimos la referencia al nivel (tablero del juego, q va del 1 al 5)
-    private GameStatus status; // Nuevo campo para el estado del juego
+    private Level level; 
+    private GameStatus status;
+    private int keysCollected;
 
     public void startNewGame() {
         positionX = 0;
         positionY = 0;
         level = new Level(); // Inicializamos el tablero
         status = GameStatus.PLAYING; // Estado inicial
+        keysCollected = 0;
     }
 
     public void setPlayerPosition(int x, int y) {
@@ -46,6 +48,11 @@ public class Game
             return false;
         }
 
+        // llave
+        if (targetCell == 'K') {
+            keysCollected++;
+        }
+
         // comprobamos si la casilla YA está iluminada 
         if (level.getCell(nextX, nextY) == '*') {
             status = GameStatus.LOST_OVERHEAT; // ¡Game Over!
@@ -77,12 +84,10 @@ public class Game
         return level.getCell(x, y) == '*';
     }
 
-    public GameStatus getStatus() {
-        return status;
-    }
-
-    // Getters
+    
+    public GameStatus getStatus() { return status; }
     public int getPlayerX() { return positionX; }
     public int getPlayerY() { return positionY; }
     public Level getLevel() { return level; }
+    public int getKeysCollected() { return keysCollected; }
 }
