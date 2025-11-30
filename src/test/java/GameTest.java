@@ -127,5 +127,24 @@ public class GameTest {
         assertFalse(moveResult, "El jugador no debería poder moverse a una casilla con candado sin la llave");
         assertEquals(0, game.getPlayerX(), "La posición X no debería cambiar");
     }
+
+    @Test
+    void testPlayerCollectsKey() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
+
+        // colocamos una Llave a la derecha 
+        level.setCell(1, 0, 'K');
+        game.setPlayerPosition(0, 0);
+
+        // movemos al jugador hacia la llave
+        game.movePlayer(Direction.RIGHT);
+
+        assertEquals(1, game.getKeysCollected(), "El jugador debería haber recogido 1 llave");
+        assertEquals('*', level.getCell(1, 0), "La casilla de la llave debería estar ahora iluminada");
+    }
+
+
 }
 
