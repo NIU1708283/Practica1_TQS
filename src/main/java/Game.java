@@ -43,9 +43,11 @@ public class Game
 
         // candado
         if (targetCell == 'L') {
-            // aquí comprobaremos el inventario más adelante.
-            // por ahora, siempre devolvemos false (bloqueado).
-            return false;
+            if (keysCollected > 0) {
+                keysCollected--;
+            } else {
+                return false; // Bloqueado: No tienes llave
+            }
         }
 
         // llave
@@ -84,7 +86,7 @@ public class Game
         return level.getCell(x, y) == '*';
     }
 
-    
+
     public GameStatus getStatus() { return status; }
     public int getPlayerX() { return positionX; }
     public int getPlayerY() { return positionY; }
