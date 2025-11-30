@@ -78,8 +78,8 @@ public class GameTest {
         level.setExit(0, 1);
 
         // iluminamos todas las casillas excepto la de la Salida a la fuerza
-        for (int i = 0; i < level.getSize(); i++) {
-            for (int j = 0; j < level.getSize(); j++) {
+        for (int i = 0; i < level.getSIZE(); i++) {
+            for (int j = 0; j < level.getSIZE(); j++) {
                 level.setCell(i, j, '*');
             }
         }

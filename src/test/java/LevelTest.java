@@ -34,12 +34,12 @@ class LevelTest {
   }
 
   @Test
-  void testBoardSize() {
+  void testBoardSIZE() {
     Level board = new Level();
 
-    int size = board.getSize();
+    int SIZE = board.getSIZE();
 
-    assertEquals(20, size);
+    assertEquals(20, SIZE);
   }
 
   @Test
