@@ -165,6 +165,25 @@ public class GameTest {
         assertEquals('*', level.getCell(2, 0), "El candado debería reemplazarse por luz");
     }
 
+    @Test
+    void testFireTileKillsPlayerWhenActivated() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
 
+        // jugador en (0,0), FireTile en (0,1)
+        game.setPlayerPosition(0, 0);
+        level.setCell(0, 1, 'F'); // 'F' = FireTile
+
+        boolean moveResult = game.movePlayer(Direction.DOWN);
+        
+        assertTrue(moveResult, "El jugador debería poder entrar en el fuego inactivo");
+        assertEquals(GameStatus.PLAYING, game.getStatus(), "El juego sigue activo");
+
+        // pasan mas d 2 segundos (fuego se activa)
+        game.updateWorld(2.1); 
+
+        assertEquals(GameStatus.LOST_FIRE, game.getStatus(), "El jugador debería morir si el fuego se activa bajo sus pies");
+    }
 }
 
