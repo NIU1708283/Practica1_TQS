@@ -35,11 +35,12 @@ public final class Level {
         switch (value) {
             case 'K' -> newTile = new KeyTile();
             case 'L' -> newTile = new LockTile();
+            case 'F' -> newTile = new FireTile();
             case '*' -> {
                 newTile = new FloorTile();
                 newTile.setLit(true);
             }
-            default -> newTile = new FloorTile(); // 'O' u otros
+            default -> newTile = new FloorTile();
         }
         board[row][col] = newTile;
     }
@@ -87,5 +88,13 @@ public final class Level {
             }
         }
         return false;
+    }
+
+    public void updateTiles(double deltaTime) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                board[i][j].update(deltaTime);
+            }
+        }
     }
 }

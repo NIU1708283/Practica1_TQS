@@ -5,5 +5,6 @@ public enum GameStatus {
     WON,
     LOST_OVERHEAT,
     LOST_STUCK,
-    LOST_INCOMPLETE
+    LOST_INCOMPLETE,
+    LOST_FIRE
 }

@@ -81,6 +81,18 @@ public class Game
         return level.getCell(x, y) == '*';
     }
 
+    public void updateWorld(double deltaTime) {
+        if (status != GameStatus.PLAYING) return;
+
+        level.updateTiles(deltaTime);
+
+        // mirar si el jugador está en una casilla letal AHORA
+        Tile currentTile = level.getTile(positionX, positionY);
+        if (currentTile.isDeadly()) {
+            status = GameStatus.LOST_FIRE; // el jugador muere quemado
+        }
+    }
+
     public GameStatus getStatus() { return status; }
     public int getPlayerX() { return positionX; }
     public int getPlayerY() { return positionY; }
