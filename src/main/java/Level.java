@@ -33,6 +33,8 @@ public final class Level {
         // Factoría simple para convertir char -> Tile
         Tile newTile;
         switch (value) {
+            case 'O' -> newTile = new FloorTile();
+            case 'X' -> newTile = new AbbysTile();
             case 'K' -> newTile = new KeyTile();
             case 'L' -> newTile = new LockTile();
             case 'F' -> newTile = new FireTile();
