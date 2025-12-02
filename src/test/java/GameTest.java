@@ -185,5 +185,26 @@ public class GameTest {
 
         assertEquals(GameStatus.LOST_FIRE, game.getStatus(), "El jugador debería morir si el fuego se activa bajo sus pies");
     }
+
+    @Test
+    void testTeleportTileMovesPlayerInstantly() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
+
+        // jugador (0,0) -> teleport (1,0) -> destino (5,5)
+        game.setPlayerPosition(0, 0);
+        
+        // nuevo método para poner teleports
+        level.addTeleport(1, 0, 5, 5); 
+
+        game.movePlayer(Direction.RIGHT);
+
+        assertEquals(5, game.getPlayerX(), "El jugador debería haber sido teletransportado a X=5");
+        assertEquals(5, game.getPlayerY(), "El jugador debería haber sido teletransportado a Y=5");
+        
+        assertTrue(game.isTileLit(1, 0), "La casilla de entrada del teleport debe iluminarse");
+        assertTrue(game.isTileLit(5, 5), "La casilla de destino debe iluminarse al aterrizar");
+    }
 }
 
