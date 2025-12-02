@@ -52,6 +52,21 @@ public class GameTest {
     }
 
     @Test
+    void testAbbysTileBlocksMovement() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
+
+        level.setCell(0, 1, 'X'); 
+        game.setPlayerPosition(0, 0);
+
+        boolean moveResult = game.movePlayer(Direction.DOWN);
+
+        assertFalse(moveResult, "El jugador no debería poder caer en el abismo (AbbysTile)");
+        assertEquals(0, game.getPlayerY(), "La posición Y no debería cambiar");
+    }
+
+    @Test
     void testMovementBlockedByWall() {
         Game game = new Game();
         game.startNewGame();
