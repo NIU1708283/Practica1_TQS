@@ -47,25 +47,26 @@ public class Game
         
         Tile targetTile = level.getTile(nextX, nextY);
 
-        // Game Over x Sobrecalentamiento
         if (targetTile.isLit()) {
             status = GameStatus.LOST_OVERHEAT;
             positionX = nextX;
             positionY = nextY;
-            return true; // movimiento permitido, pero juego terminado
+            return true;
         }
-        // comprueba si se puede pasar
+
         if (!targetTile.isWalkable(this)) {
             return false;
         }
-        // activa los efectos de la casilla
-        targetTile.onStep(this);
 
-        // Actualizar posición
+        // actualizar posición PRIMERO
         positionX = nextX;
         positionY = nextY;
 
-        // Victoria??
+        // acción de entrada DESPUÉS
+        // si es un Teleport, esto llama a teleportTo(), que vuelve a cambiar la posición del jugador
+        targetTile.onStep(this);
+        
+        // victoria
         if (level.isExit(positionX, positionY)) {
             if (!level.hasUnlitTiles()) {
                 status = GameStatus.WON;
@@ -91,6 +92,23 @@ public class Game
         if (currentTile.isDeadly()) {
             status = GameStatus.LOST_FIRE; // el jugador muere quemado
         }
+    }
+
+    public void teleportTo(int x, int y) {
+        if (x < 0 || x >= level.getSIZE() || y < 0 || y >= level.getSIZE()) {
+            return; // fuera de límites, no hacemos nada
+        }
+        if (positionX == x && positionY == y) {
+            return; // ya estamos ahí, no hacemos nada
+        }
+        
+        positionX = x;
+        positionY = y;
+        
+        // al aterrizar, interactuamos con la casilla de destino (para que se ilumine o recojamos un objeto)
+        Tile destTile = level.getTile(x, y);
+        destTile.onStep(this);
+        
     }
 
     public GameStatus getStatus() { return status; }

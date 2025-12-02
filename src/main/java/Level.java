@@ -99,4 +99,9 @@ public final class Level {
             }
         }
     }
+
+    public void addTeleport(int x, int y, int destX, int destY) {
+        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) return;
+        setTile(x, y, new TeleportTile(destX, destY));
+    }
 }
