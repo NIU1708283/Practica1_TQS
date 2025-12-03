@@ -18,3 +18,11 @@ X X X X X X X X X X X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
+# WALLS
+3,5,3,6
+4,5,4,6
+8,9,8,10
+9,9,9,10
+7,10,7,11
+8,10,8,11
+8,15,9,15
