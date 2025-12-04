@@ -7,62 +7,56 @@ class LevelLoaderTest {
 
     @Test
     void testLoadLevelFromTextFormat() {
-        // los caracteres estan separados por espacios
-        // los WALLS con comas
+        // mapa de prueba:
+        // S O X  (StartTile, FloorTile, AbbysTile)
+        // O E L  (FloorTile, EndTile, LockTile)
+        // K O O  (KeyTile, FloorTile, FloorTile)
         
-        // S O X  (start, suelo, abbys)
-        // O E L  (suelo, salida, lock)
-        // K O O  (key, suelo, suelo)
-        
-        List<String> lines = Arrays.asList( // creación de un minimapa para hacer pruebas 
+        List<String> lines = Arrays.asList( 
             "S O X", 
             "O E L", 
             "K O O",
             "# WALLS",
-            "0,0,0,1", // muro vertical entre (0,0) y (0,1)
-            "1,1,2,1"  // muro horizontal entre (1,1) y (2,1)
+            "0,0,0,1", 
+            "1,1,2,1"
         );
 
         LevelLoader loader = new LevelLoader();
         Level level = new Level();
 
-        // carga del nivel
         try {
             loader.loadLevelFromLines(level, lines);
         } catch (Exception e) {
             fail("La carga del nivel no debería lanzar excepciones: " + e.getMessage());
         }
 
-        // --- verificaciones de la cuadrícula ---
+        // --- verificaciones de cuadrícula ---
         
         // verificación start ('S') en (0,0)
-        assertEquals(0, level.getStartX(), "Debe cargar la coordenada X de inicio");
-        assertEquals(0, level.getStartY(), "Debe cargar la coordenada Y de inicio");
-        assertEquals('S', level.getCell(0, 0), "Bajo la 'S' debe haber un suelo transitable");
+        assertEquals(0, level.getStartX());
+        assertEquals(0, level.getStartY());
+        assertTrue(level.getTile(0, 0) instanceof StartTile, "La casilla inicial debe ser StartTile");
+        assertEquals('S', level.getCell(0, 0)); 
 
-        // verificación abbys ('X') en (2,0) -> x=2, y=0
-        assertEquals('X', level.getCell(2, 0));
-        assertTrue(level.getTile(0, 2) instanceof AbbysTile, "La 'X' debe ser un AbbysTile (ojo: getTile usa fila,col -> y,x)");
+        // verificación abbys ('X') en (2,0)
+        assertEquals('K', level.getCell(2, 0));
+        assertTrue(level.getTile(0, 2) instanceof AbbysTile);
 
         // verificación exit ('E') en (1,1)
-        assertTrue(level.isExit(1, 1), "Debe marcar la casilla (1,1) como salida");
-        
+        assertTrue(level.isExit(1, 1));
+        assertTrue(level.getTile(1, 1) instanceof EndTile, "La casilla de salida debe ser EndTile");
+        assertEquals('E', level.getCell(1, 1));
+
         // verificación lock ('L') en (2,1)
-        assertTrue(level.getTile(1, 2) instanceof LockTile, "En (2,1) debe haber un LockTile");
+        assertTrue(level.getTile(1, 2) instanceof LockTile);
 
         // verificación key ('K') en (0,2)
-        assertTrue(level.getTile(2, 0) instanceof KeyTile, "En (0,2) debe haber un KeyTile");
+        assertTrue(level.getTile(2, 0) instanceof KeyTile);
 
 
         // --- verificaciones de walls ---
-        
-        // verificación muro 1: 0,0,0,1
-        assertTrue(level.hasWall(0, 0, 0, 1), "Debe existir el muro cargado desde la sección # WALLS");
-
-        // verificación muro 2: 1,1,2,1
-        assertTrue(level.hasWall(1, 1, 2, 1), "Debe existir el muro horizontal cargado");
-
-        // verificación que NO hay muros inventados
-        assertFalse(level.hasWall(0, 0, 1, 0), "No debería haber muro donde no se definió");
+        assertTrue(level.hasWall(0, 0, 0, 1));
+        assertTrue(level.hasWall(1, 1, 2, 1));
+        assertFalse(level.hasWall(0, 0, 1, 0));
     }
 }

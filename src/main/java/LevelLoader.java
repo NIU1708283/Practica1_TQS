@@ -20,7 +20,7 @@ public class LevelLoader {
             if (line.isEmpty()) continue;
             if (line.startsWith("[source")) continue;
 
-            if (line.startsWith("# WALLS")) { // sección de muros
+            if (line.startsWith("# WALLS")) {
                 readingWalls = true;
                 continue;
             }
@@ -28,7 +28,7 @@ public class LevelLoader {
             if (readingWalls) {
                 processWallLine(level, line);
             } else {
-                String cleanLine = line.replace(" ", ""); // eliminar espacios
+                String cleanLine = line.replace(" ", "");
                 processGridLine(level, row, cleanLine);
                 row++;
             }
@@ -42,14 +42,22 @@ public class LevelLoader {
             if (col >= level.getSIZE()) break;
 
             char charCode = line.charAt(col);
-            level.setCell(row, col, charCode);
-
+            
+            if (charCode == 'S') {
+                level.setStart(col, row);
+                level.setTile(row, col, new StartTile()); 
+            } else if (charCode == 'E') {
+                level.setExit(col, row);
+                level.setTile(row, col, new EndTile()); 
+            } else {
+                // Delegamos en la factoría de Level para el resto
+                level.setCell(row, col, charCode);
+            }
         }
     }
 
     private void processWallLine(Level level, String line) {
         try {
-            // Formato esperado: x1,y1,x2,y2
             String[] parts = line.split(",");
             if (parts.length == 4) {
                 int x1 = Integer.parseInt(parts[0].trim());
