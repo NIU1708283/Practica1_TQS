@@ -61,6 +61,22 @@ class LevelLoaderTest {
     }
 
     @Test
+    void testGridCoordinatesMapping() {
+        // Mapa: S O K
+        // S en (0,0) -> x=0
+        // O en (1,0) -> x=1
+        // K en (2,0) -> x=2 (Columna 2)
+        List<String> lines = Arrays.asList("S O K");
+
+        LevelLoader loader = new LevelLoader();
+        Level level = new Level();
+        loader.loadLevelFromLines(level, lines);
+        
+        assertEquals('K', level.getCell(2, 0), "La casilla en x=2, y=0 debería ser una Llave ('K')");
+        assertTrue(level.getTile(2, 0) instanceof KeyTile);
+    }
+
+    @Test
     void testWallCoordinatesAreRowCol() {
         // simulamos un archivo con un muro definido como: 0,5,1,5
         List<String> lines = Arrays.asList(
