@@ -17,7 +17,7 @@ public class GameView {
                 }
 
                 // 2. Obtener el carácter base del Tile
-                char cellChar = level.getCell(y, x);
+                char cellChar = level.getCell(x, y);
                 
                 // 3. Traducción visual (Internal -> Visual)
                 char visualChar = switch (cellChar) {

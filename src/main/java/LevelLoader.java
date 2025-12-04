@@ -11,7 +11,7 @@ public class LevelLoader {
     }
 
     public void loadLevelFromLines(Level level, List<String> lines) {
-        int row = 0;
+        int y = 0;
         boolean readingWalls = false;
 
         for (String line : lines) {
@@ -29,20 +29,20 @@ public class LevelLoader {
                 processWallLine(level, line);
             } else {
                 String cleanLine = line.replace(" ", "");
-                processGridLine(level, row, cleanLine);
-                row++;
+                processGridLine(level, y, cleanLine);
+                y++;
             }
         }
     }
 
-    private void processGridLine(Level level, int row, String line) {
-        if (row >= level.getSIZE()) return;
+    private void processGridLine(Level level, int y, String line) {
+        if (y >= level.getSIZE()) return;
 
-        for (int col = 0; col < line.length(); col++) {
-            if (col >= level.getSIZE()) break;
+        for (int x = 0; x < line.length(); x++) {
+            if (x >= level.getSIZE()) break;
                         
-            char charCode = line.charAt(col);
-            level.setCell(row, col, charCode);
+            char charCode = line.charAt(x);
+            level.setCell(x, y, charCode);
         }
     }
 

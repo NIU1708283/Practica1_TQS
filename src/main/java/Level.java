@@ -16,19 +16,17 @@ public final class Level {
         reset();
     }
     
-    public Tile getTile(int row, int col) {
-        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
-            throw new IndexOutOfBoundsException("Cell index out of bounds");
+    public Tile getTile(int x, int y) {
+        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) {
+            throw new IndexOutOfBoundsException("Coordenadas fuera de limites");
         }
-        return board[row][col];
+        return board[y][x];
     }
 
-    public char getCell(int row, int col) {
-        return getTile(row, col).getCharacter();
-    }
+    public char getCell(int x, int y) { return getTile(x, y).getCharacter(); }
     
-    public void setCell(int row, int col, char value) {
-        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
+    public void setCell(int x, int y, char value) {
+        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) {
             throw new IndexOutOfBoundsException("Cell index out of bounds");
         }
         
@@ -41,13 +39,13 @@ public final class Level {
             case 'F' -> newTile = new FireTile();
             case 'S' -> {
                 newTile = new StartTile();
-                this.startX = col;
-                this.startY = row;
+                this.startX = x;
+                this.startY = y;
             }
             case 'E' -> {
                 newTile = new EndTile();
-                this.exitX = col;
-                this.exitY = row;
+                this.exitX = x;
+                this.exitY = y;
             }
             case '*' -> {
                 newTile = new FloorTile();
@@ -55,20 +53,20 @@ public final class Level {
             }
             default -> newTile = new FloorTile();
         }
-        board[row][col] = newTile;
+        board[y][x] = newTile;
     }
     
-    public void setTile(int row, int col, Tile tile) {
-        if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
+    public void setTile(int x, int y, Tile tile) {
+        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) {
             throw new IndexOutOfBoundsException("Cell index out of bounds");
         }
-        board[row][col] = tile;
+        board[y][x] = tile;
     }
     
     public void reset() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                board[i][j] = new FloorTile(); 
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
+                board[y][x] = new FloorTile(); 
             }
         }
         walls.clear();
@@ -98,9 +96,9 @@ public final class Level {
     public boolean isExit(int x, int y) { return x == exitX && y == exitY; }
 
     public boolean hasUnlitTiles() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (!board[i][j].isLit()) { 
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
+                if (!board[y][x].isLit()) { 
                     return true;
                 }
             }
@@ -109,9 +107,9 @@ public final class Level {
     }
 
     public void updateTiles(double deltaTime) {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                board[i][j].update(deltaTime);
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
+                board[y][x].update(deltaTime);
             }
         }
     }
