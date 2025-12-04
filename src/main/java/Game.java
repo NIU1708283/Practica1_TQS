@@ -112,8 +112,13 @@ public class Game
     }
 
     public GameStatus getStatus() { return status; }
+    public void setStatus(GameStatus status) { this.status = status; }
     public int getPlayerX() { return positionX; }
     public int getPlayerY() { return positionY; }
     public Level getLevel() { return level; }
     public int getKeysCollected() { return keysCollected; }
+
+    public void setPlayerStartPosition(int x, int y) {
+        level.setStart(x, y);
+    }
 }

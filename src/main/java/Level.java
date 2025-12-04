@@ -5,6 +5,8 @@ public final class Level {
     private final int SIZE = 20;
     private final Tile[][] board; 
     private final Set<String> walls;
+    private int startX = 0;
+    private int startY = 0;
     private int exitX = -1;
     private int exitY = -1;
     
@@ -77,6 +79,11 @@ public final class Level {
         }
         return x2 + "," + y2 + "-" + x1 + "," + y1;
     }
+
+    public void setStart(int x, int y) { startX = x; startY = y; }
+    public boolean isStart(int x, int y) { return x == startX && y == startY; }
+    public int getStartX() { return startX; }
+    public int getStartY() { return startY; }
 
     public void setExit(int x, int y) { exitX = x; exitY = y; }
     public boolean isExit(int x, int y) { return x == exitX && y == exitY; }

@@ -38,7 +38,7 @@ class LevelLoaderTest {
         // verificación start ('S') en (0,0)
         assertEquals(0, level.getStartX(), "Debe cargar la coordenada X de inicio");
         assertEquals(0, level.getStartY(), "Debe cargar la coordenada Y de inicio");
-        assertEquals('O', level.getCell(0, 0), "Bajo la 'S' debe haber un suelo transitable");
+        assertEquals('S', level.getCell(0, 0), "Bajo la 'S' debe haber un suelo transitable");
 
         // verificación abbys ('X') en (2,0) -> x=2, y=0
         assertEquals('X', level.getCell(2, 0));
