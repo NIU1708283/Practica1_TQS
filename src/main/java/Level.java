@@ -32,7 +32,6 @@ public final class Level {
             throw new IndexOutOfBoundsException("Cell index out of bounds");
         }
         
-        // Factoría simple para convertir char -> Tile
         Tile newTile;
         switch (value) {
             case 'O' -> newTile = new FloorTile();
@@ -40,6 +39,16 @@ public final class Level {
             case 'K' -> newTile = new KeyTile();
             case 'L' -> newTile = new LockTile();
             case 'F' -> newTile = new FireTile();
+            case 'S' -> {
+                newTile = new StartTile();
+                this.startX = col;
+                this.startY = row;
+            }
+            case 'E' -> {
+                newTile = new EndTile();
+                this.exitX = col;
+                this.exitY = row;
+            }
             case '*' -> {
                 newTile = new FloorTile();
                 newTile.setLit(true);

@@ -40,21 +40,9 @@ public class LevelLoader {
 
         for (int col = 0; col < line.length(); col++) {
             if (col >= level.getSIZE()) break;
-
+                        
             char charCode = line.charAt(col);
-            
-            switch (charCode) {
-                case 'S' -> {
-                    level.setStart(col, row);
-                    level.setTile(row, col, new StartTile());
-                }
-                case 'E' -> {
-                    level.setExit(col, row);
-                    level.setTile(row, col, new EndTile());
-                }
-                default -> // Delegamos en la factoría de Level para el resto
-                    level.setCell(row, col, charCode);
-            }
+            level.setCell(row, col, charCode);
         }
     }
 

@@ -1,9 +1,12 @@
+import java.io.IOException;
+
 public class Game 
 {
+    private final LevelLoader levelLoader = new LevelLoader();
+    private Level level;
+    private GameStatus status;
     private int positionX;
     private int positionY;
-    private Level level; 
-    private GameStatus status;
     private int keysCollected;
 
     public void addKey() {
@@ -54,26 +57,12 @@ public class Game
             return true;
         }
 
-        if (!targetTile.isWalkable(this)) {
-            return false;
-        }
+        if (!targetTile.isWalkable(this)) { return false; }
 
-        // actualizar posición PRIMERO
         positionX = nextX;
         positionY = nextY;
 
-        // acción de entrada DESPUÉS
-        // si es un Teleport, esto llama a teleportTo(), que vuelve a cambiar la posición del jugador
         targetTile.onStep(this);
-        
-        // victoria
-        if (level.isExit(positionX, positionY)) {
-            if (!level.hasUnlitTiles()) {
-                status = GameStatus.WON;
-            } else {
-                status = GameStatus.LOST_INCOMPLETE;
-            }
-        }
         
         return true;
     }
@@ -111,8 +100,23 @@ public class Game
         
     }
 
+    public void loadLevel(int levelNumber) {
+        startNewGame(); 
+        
+        try {
+            String path = "src/maps/level" + levelNumber + ".txt";
+            levelLoader.loadLevel(this.level, path);
+            
+            this.positionX = level.getStartX();
+            this.positionY = level.getStartY();
+            level.setCell(positionX, positionY, '*');
+            
+        } catch (IOException e) {
+            System.err.println("Error cargando el nivel " + levelNumber + ": " + e.getMessage());
+        }
+    }
+
     public GameStatus getStatus() { return status; }
-    public void setStatus(GameStatus status) { this.status = status; }
     public int getPlayerX() { return positionX; }
     public int getPlayerY() { return positionY; }
     public Level getLevel() { return level; }
@@ -121,4 +125,6 @@ public class Game
     public void setPlayerStartPosition(int x, int y) {
         level.setStart(x, y);
     }
+    public void setStatus(GameStatus status) { this.status = status; }
+
 }

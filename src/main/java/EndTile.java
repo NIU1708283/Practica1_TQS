@@ -10,6 +10,8 @@ public class EndTile extends Tile
         this.isLit = true;
         if (!game.getLevel().hasUnlitTiles()) {
             game.setStatus(GameStatus.WON);
+        } else {
+            game.setStatus(GameStatus.LOST_INCOMPLETE);
         }
     }
 
