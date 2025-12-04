@@ -2,7 +2,7 @@ public class GameController {
     private final Game game;
     private final GameView view;
     private boolean isRunning;
-    private int currentLevelNumber = 1;
+    private int currentLevelNumber = 21; // nivel para pruebas manuales simples en terminal 
 
     public GameController(Game game, GameView view) {
         this.game = game;

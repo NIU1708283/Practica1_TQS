@@ -122,6 +122,26 @@ public class GameTest {
     }
 
     @Test
+    void testWinConditionIgnoresAbbysTiles() {
+        Game game = new Game();
+        game.startNewGame();
+        Level level = game.getLevel();
+
+        // S E
+        // X X  
+        level.setCell(0, 0, 'S');
+        level.setCell(0, 1, 'E');
+        level.setCell(1, 0, 'X');
+        level.setCell(1, 1, 'X');
+
+        game.setPlayerPosition(0, 0); 
+        game.movePlayer(Direction.RIGHT);
+
+        assertEquals(GameStatus.WON, game.getStatus(), 
+            "El juego debería ganarse ignorando las casillas AbbysTile (X) que no se pueden pisar");
+    }
+
+    @Test
     void testMovementBlockedByLockWithoutKey() {
         Game game = new Game();
         game.startNewGame();
