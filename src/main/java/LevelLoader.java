@@ -43,15 +43,17 @@ public class LevelLoader {
 
             char charCode = line.charAt(col);
             
-            if (charCode == 'S') {
-                level.setStart(col, row);
-                level.setTile(row, col, new StartTile()); 
-            } else if (charCode == 'E') {
-                level.setExit(col, row);
-                level.setTile(row, col, new EndTile()); 
-            } else {
-                // Delegamos en la factoría de Level para el resto
-                level.setCell(row, col, charCode);
+            switch (charCode) {
+                case 'S' -> {
+                    level.setStart(col, row);
+                    level.setTile(row, col, new StartTile());
+                }
+                case 'E' -> {
+                    level.setExit(col, row);
+                    level.setTile(row, col, new EndTile());
+                }
+                default -> // Delegamos en la factoría de Level para el resto
+                    level.setCell(row, col, charCode);
             }
         }
     }
