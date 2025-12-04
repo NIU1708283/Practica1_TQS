@@ -88,9 +88,6 @@ public class GameTest {
         game.startNewGame();
         Level level = game.getLevel();
 
-        // definimos la Salida en (0, 1)
-        level.setExit(0, 1);
-
         // iluminamos todas las casillas excepto la de la Salida a la fuerza
         for (int i = 0; i < level.getSIZE(); i++) {
             for (int j = 0; j < level.getSIZE(); j++) {
@@ -98,8 +95,7 @@ public class GameTest {
             }
         }
         // apagamos la casilla de la Salida
-        level.setCell(0, 1, 'O');
-
+        level.setCell(0, 1, 'E');
         // ponemos al jugador al lado (0, 0)
         game.setPlayerPosition(0, 0);
 
@@ -116,7 +112,7 @@ public class GameTest {
         game.startNewGame();
         Level level = game.getLevel();
 
-        level.setExit(0, 1);
+        level.setCell(0, 1, 'E');
         game.setPlayerPosition(0, 0);
         game.movePlayer(Direction.DOWN); // (0,0) -> (0,1)
 
