@@ -96,9 +96,10 @@ public final class Level {
     public boolean isExit(int x, int y) { return x == exitX && y == exitY; }
 
     public boolean hasUnlitTiles() {
-        for (int y = 0; y < SIZE; y++) {
-            for (int x = 0; x < SIZE; x++) {
-                if (!board[y][x].isLit()) { 
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                Tile tile = board[i][j];
+                if (tile.requiresLight() && !tile.isLit()) { 
                     return true;
                 }
             }

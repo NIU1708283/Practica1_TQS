@@ -14,4 +14,6 @@ public abstract class Tile
 
     // mata al jugador si esta encima, por defecto no es mortal
     public boolean isDeadly() { return false; }
+
+    public boolean requiresLight() { return true; } // por defecto, las casillas requieren estar iluminadas para WIN
 }

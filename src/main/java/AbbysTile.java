@@ -12,4 +12,9 @@ public class AbbysTile extends Tile
     public char getCharacter() {
         return 'X';
     }
+
+    @Override
+    public boolean requiresLight() {
+        return false; // abismos no cuentan para la condición de victoria
+    }
 }
