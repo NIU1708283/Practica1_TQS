@@ -50,10 +50,10 @@ public class LevelLoader {
         try {
             String[] parts = line.split(",");
             if (parts.length == 4) {
-                int x1 = Integer.parseInt(parts[0].trim());
-                int y1 = Integer.parseInt(parts[1].trim());
-                int x2 = Integer.parseInt(parts[2].trim());
-                int y2 = Integer.parseInt(parts[3].trim());
+                int y1 = Integer.parseInt(parts[0].trim());
+                int x1 = Integer.parseInt(parts[1].trim());
+                int y2 = Integer.parseInt(parts[2].trim());
+                int x2 = Integer.parseInt(parts[3].trim());
                 
                 level.addWall(x1, y1, x2, y2);
             }

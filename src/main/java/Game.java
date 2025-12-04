@@ -30,7 +30,7 @@ public class Game
     public void setPlayerPosition(int x, int y) {
         positionX = x;
         positionY = y;
-        level.setCell(positionY, positionX, '*'); // iluminar la casilla donde se coloca el jugador
+        level.setCell(positionX, positionY, '*'); // iluminar la casilla donde se coloca el jugador
     }
 
     public boolean movePlayer(Direction direction) {
@@ -48,7 +48,7 @@ public class Game
         // límites
         if (nextX < 0 || nextX >= level.getSIZE() || nextY < 0 || nextY >= level.getSIZE()) return false;
         
-        Tile targetTile = level.getTile(nextY, nextX);
+        Tile targetTile = level.getTile(nextX, nextY);
 
         if (targetTile.isLit()) {
             status = GameStatus.LOST_OVERHEAT;
@@ -68,7 +68,7 @@ public class Game
     }
 
     public boolean isTileLit(int x, int y) {
-        return level.getCell(y, x) == '*';
+        return level.getCell(x, y) == '*';
     }
 
     public void updateWorld(double deltaTime) {
@@ -77,7 +77,7 @@ public class Game
         level.updateTiles(deltaTime);
 
         // mirar si el jugador está en una casilla letal AHORA
-        Tile currentTile = level.getTile(positionY, positionX);
+        Tile currentTile = level.getTile(positionX, positionY);
         if (currentTile.isDeadly()) {
             status = GameStatus.LOST_FIRE; // el jugador muere quemado
         }
@@ -95,7 +95,7 @@ public class Game
         positionY = y;
         
         // al aterrizar, interactuamos con la casilla de destino (para que se ilumine o recojamos un objeto)
-        Tile destTile = level.getTile(y, x);
+        Tile destTile = level.getTile(x, y);
         destTile.onStep(this);
         
     }
@@ -109,7 +109,7 @@ public class Game
             
             this.positionX = level.getStartX();
             this.positionY = level.getStartY();
-            level.setCell(positionY, positionX, '*');
+            level.setCell(positionX, positionY, '*');
             
         } catch (IOException e) {
             System.err.println("Error cargando el nivel " + levelNumber + ": " + e.getMessage());
