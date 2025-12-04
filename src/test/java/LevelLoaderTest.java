@@ -59,4 +59,30 @@ class LevelLoaderTest {
         assertTrue(level.hasWall(1, 1, 2, 1));
         assertFalse(level.hasWall(0, 0, 1, 0));
     }
+
+    @Test
+    void testWallCoordinatesAreRowCol() {
+        // simulamos un archivo con un muro definido como: 0,5,1,5
+        List<String> lines = Arrays.asList(
+            "O O O O O O", 
+            "O O O O O O",
+            "# WALLS",
+            "0,5,1,5" 
+        );
+
+        LevelLoader loader = new LevelLoader();
+        Level level = new Level();
+
+        try {
+            loader.loadLevelFromLines(level, lines);
+        } catch (Exception e) {
+            fail("Excepción cargando nivel: " + e.getMessage());
+        }
+        
+        boolean hasVerticalWall = level.hasWall(5, 0, 5, 1);
+        assertTrue(hasVerticalWall, "El muro 0,5,1,5 debería bloquear el movimiento vertical en la columna 5 (x=5)");
+        
+        boolean hasHorizontalWall = level.hasWall(0, 5, 1, 5);
+        assertFalse(hasHorizontalWall, "No debería haber creado un muro horizontal interpretando coordenadas al revés");
+    }
 }
