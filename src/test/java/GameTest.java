@@ -127,18 +127,22 @@ public class GameTest {
         game.startNewGame();
         Level level = game.getLevel();
 
-        // S E
-        // X X  
-        level.setCell(0, 0, 'S');
-        level.setCell(1, 0, 'E');
-        level.setCell(0, 1, 'X');
-        level.setCell(1, 1, 'X');
+        // primero llenamos TODO el tablero de abismos
+        for (int x = 0; x < level.getSIZE(); x++) {
+            for (int y = 0; y < level.getSIZE(); y++) {
+                level.setCell(x, y, 'X');
+            }
+        }
+
+        level.setCell(0, 0, 'S'); // start en x=0, y=0
+        level.setCell(1, 0, 'E'); // exit en x=1, y=0 (columna, fila)
 
         game.setPlayerPosition(0, 0); 
+
         game.movePlayer(Direction.RIGHT);
 
         assertEquals(GameStatus.WON, game.getStatus(), 
-            "El juego debería ganarse ignorando las casillas AbbysTile (X) que no se pueden pisar");
+            "El juego debería ganarse ignorando las casillas AbbysTile (X)");
     }
 
     @Test
