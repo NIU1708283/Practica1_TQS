@@ -49,7 +49,7 @@ class LevelTest {
     try {
       board.getCell(20, 20);
     } catch (IndexOutOfBoundsException e) {
-      assertEquals("Cell index out of bounds", e.getMessage());
+      assertEquals("Coordenadas fuera de limites", e.getMessage());
     }
   }
 }

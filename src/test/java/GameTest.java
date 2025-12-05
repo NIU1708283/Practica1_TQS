@@ -130,8 +130,8 @@ public class GameTest {
         // S E
         // X X  
         level.setCell(0, 0, 'S');
-        level.setCell(0, 1, 'E');
-        level.setCell(1, 0, 'X');
+        level.setCell(1, 0, 'E');
+        level.setCell(0, 1, 'X');
         level.setCell(1, 1, 'X');
 
         game.setPlayerPosition(0, 0); 

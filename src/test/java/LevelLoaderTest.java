@@ -39,8 +39,8 @@ class LevelLoaderTest {
         assertEquals('S', level.getCell(0, 0)); 
 
         // verificación abbys ('X') en (2,0)
-        assertEquals('K', level.getCell(2, 0));
-        assertTrue(level.getTile(0, 2) instanceof AbbysTile);
+        assertEquals('X', level.getCell(2, 0));
+        assertTrue(level.getTile(2, 0) instanceof AbbysTile);
 
         // verificación exit ('E') en (1,1)
         assertTrue(level.isExit(1, 1));
@@ -48,16 +48,15 @@ class LevelLoaderTest {
         assertEquals('E', level.getCell(1, 1));
 
         // verificación lock ('L') en (2,1)
-        assertTrue(level.getTile(1, 2) instanceof LockTile);
+        assertTrue(level.getTile(2, 1) instanceof LockTile);
 
         // verificación key ('K') en (0,2)
-        assertTrue(level.getTile(2, 0) instanceof KeyTile);
+        assertTrue(level.getTile(0, 2) instanceof KeyTile);
 
 
         // --- verificaciones de walls ---
-        assertTrue(level.hasWall(0, 0, 0, 1));
-        assertTrue(level.hasWall(1, 1, 2, 1));
-        assertFalse(level.hasWall(0, 0, 1, 0));
+        assertTrue(level.hasWall(1, 1, 1, 2));
+        assertFalse(level.hasWall(0, 0, 0, 1));
     }
 
     @Test
