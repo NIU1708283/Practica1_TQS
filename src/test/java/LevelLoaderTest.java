@@ -100,4 +100,31 @@ class LevelLoaderTest {
         boolean hasHorizontalWall = level.hasWall(0, 5, 1, 5);
         assertFalse(hasHorizontalWall, "No debería haber creado un muro horizontal interpretando coordenadas al revés");
     }
+
+    @Test
+    void testLoadTeleports() {
+        // desde (fila 1, col 0) hacia (fila 0, col 3)
+        List<String> lines = Arrays.asList(
+            "O O O O O",
+            "O O O O O", 
+            "# TELEPORT",
+            "1,0,0,3" 
+        );
+
+        LevelLoader loader = new LevelLoader();
+        Level level = new Level();
+
+        try {
+            loader.loadLevelFromLines(level, lines);
+        } catch (Exception e) {
+            fail("Excepción cargando nivel: " + e.getMessage());
+        }
+
+        assertTrue(level.getTile(3, 0) instanceof TeleportTile, // verificamos la casilla destino
+            "Debería haber cargado un TeleportTile en x=3, y=0");
+            
+        
+    }
+
+
 }
