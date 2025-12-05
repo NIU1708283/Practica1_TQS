@@ -1,8 +1,8 @@
 public class GameController {
     private final Game game;
     private final GameView view;
-    private boolean isRunning;
-    private int currentLevelNumber = 21; // nivel para pruebas manuales simples en terminal 
+    private boolean isLevelRunning;
+    private int currentLevelNumber;
 
     public GameController(Game game, GameView view) {
         this.game = game;
@@ -10,20 +10,49 @@ public class GameController {
     }
 
     public void startGame() {
-        // para cargar el primer nivel
-        game.loadLevel(currentLevelNumber);
-        isRunning = true;
-        gameLoop();
+        currentLevelNumber = view.askForLevel();
+        
+        boolean appRunning = true;
+
+        while (appRunning) {
+            playLevel(currentLevelNumber);
+
+            GameStatus status = game.getStatus();
+            if (status == GameStatus.WON) {
+                if (currentLevelNumber >= 5) {
+                    view.displayMessage("¡FELICIDADES! ¡HAS COMPLETADO TODOS LOS NIVELES!");
+                    appRunning = false;
+                } else {
+                    char choice = view.askEndGameOption(true);
+                    if (choice == 's') {
+                        currentLevelNumber++; // si el jugador ha ganado y quiere seguir, avanza al siguiente nivel
+                    } else {
+                        appRunning = false; // sino, se sale
+                    }
+                }
+            } else { // si ha perdido
+                char choice = view.askEndGameOption(false);
+                if (choice == 'r') {
+                } else {
+                    appRunning = false;
+                }
+            }
+        }
+        
+        view.displayMessage("¡Gracias por jugar a LightyRoom!");
     }
 
-    private void gameLoop() {
+    private void playLevel(int levelNum) {
+        game.loadLevel(levelNum);
+        isLevelRunning = true;
+        
         long lastTime = System.currentTimeMillis();
 
-        while (isRunning) {
+        while (isLevelRunning) {
             view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
             
-            checkGameStatus();
-            if (!isRunning) break; // salir si el juego terminó (Win/Loss)
+            checkGameStatus(); 
+            if (!isLevelRunning) break; 
 
             long currentTime = System.currentTimeMillis();
             double deltaTime = (currentTime - lastTime) / 1000.0;
@@ -31,14 +60,15 @@ public class GameController {
 
             game.updateWorld(deltaTime);
 
+            // control especial para muerte por tiempo (fuego)
             if (game.getStatus() == GameStatus.LOST_FIRE) {
+                view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
                 view.displayMessage("¡TE HAS QUEMADO! (El fuego cambió mientras pensabas)");
-                isRunning = false;
+                isLevelRunning = false;
                 break;
             }
 
             char input = view.getInput();
-
             processInput(input);
         }
     }
@@ -54,11 +84,11 @@ public class GameController {
                 game.loadLevel(currentLevelNumber);
             }
             case 'q' -> {
-                view.displayMessage("Saliendo del juego...");
-                isRunning = false;
+                view.displayMessage("Saliendo al menú...");
+                game.setStatus(GameStatus.LOST_INCOMPLETE);
+                isLevelRunning = false;
             }
-            // Truco para esperar sin mover (pasar turno)
-            case ' ' -> { /* No hacer nada, solo pasa el tiempo */ }
+            case ' ' -> { /* por ahora se espera, más adelante se eliminará */ }
         }
     }
 
@@ -68,29 +98,22 @@ public class GameController {
         switch (status) {
             case WON -> {
                 view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                view.displayMessage("¡NIVEL COMPLETADO! ¡ERES UN SER DE LUZ!");
-                isRunning = false; 
-                // Aquí podrías sumar currentLevelNumber++ y cargar el siguiente.
+                view.displayMessage("¡NIVEL " + currentLevelNumber + " COMPLETADO!");
+                isLevelRunning = false; 
             }
             case LOST_OVERHEAT -> {
                 view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
                 view.displayMessage("GAME OVER: ¡Has pisado una casilla ya iluminada!");
-                isRunning = false;
+                isLevelRunning = false;
             }
             case LOST_INCOMPLETE -> {
-                view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                view.displayMessage("GAME OVER: Llegaste al final pero te dejaste luces apagadas.");
-                isRunning = false;
+                if (isLevelRunning) { 
+                    view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
+                    view.displayMessage("GAME OVER: Llegaste al final pero te dejaste luces apagadas.");
+                    isLevelRunning = false;
+                }
             }
-            case LOST_FIRE -> {
-                view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                view.displayMessage("GAME OVER: ¡Te ha alcanzado el fuego!");
-                isRunning = false;
-            }
-            case LOST_STUCK -> {
-                 view.displayMessage("GAME OVER: ¡Te has quedado atascado!");
-                 isRunning = false;
-            }
+            // LOST_FIRE ya se maneja en el loop principal
         }
     }
 }

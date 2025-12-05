@@ -51,4 +51,39 @@ public class GameView {
         if (input.isEmpty()) return ' ';
         return input.charAt(0);
     }
+
+    public int askForLevel() {
+        while (true) {
+            System.out.print("\nSelecciona un nivel (1-5): ");
+            try {
+                String input = scanner.next();
+                int level = Integer.parseInt(input);
+                if ((level >= 1 && level <= 5)||(level==21)) {
+                    return level;
+                } else {
+                    System.out.println("Por favor, introduce un número entre 1 y 5.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida.");
+            }
+        }
+    }
+
+    public char askEndGameOption(boolean won) {
+        System.out.println("\n--------------------------------");
+        if (won) {
+            System.out.print("¿Qué quieres hacer? (S)iguiente Nivel / (Q)uit: ");
+        } else {
+            System.out.print("¿Qué quieres hacer? (R)eintentar / (Q)uit: ");
+        }
+        
+        while (true) {
+            String input = scanner.next().toLowerCase();
+            char option = input.charAt(0);
+            if (option == 's' || option == 'r' || option == 'q') {
+                return option;
+            }
+            System.out.print("Opción no válida. Inténtalo de nuevo: ");
+        }
+    }
 }
