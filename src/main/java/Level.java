@@ -4,6 +4,7 @@ import java.util.Set;
 public final class Level {
     private final int SIZE = 20;
     private final Tile[][] board; 
+    private final boolean[][] active;
     private final Set<String> walls;
     private int startX = 0;
     private int startY = 0;
@@ -12,6 +13,7 @@ public final class Level {
     
     public Level() {
         board = new Tile[SIZE][SIZE];
+        active = new boolean[SIZE][SIZE];
         walls = new HashSet<>();
         reset();
     }
@@ -37,6 +39,7 @@ public final class Level {
             case 'K' -> newTile = new KeyTile();
             case 'L' -> newTile = new LockTile();
             case 'F' -> newTile = new FireTile();
+            case 'T' -> newTile = new FloorTile(); // Teleport se configura después con addTeleport()
             case 'S' -> {
                 newTile = new StartTile();
                 this.startX = x;
@@ -54,6 +57,7 @@ public final class Level {
             default -> newTile = new FloorTile();
         }
         board[y][x] = newTile;
+        active[y][x] = true;
     }
     
     public void setTile(int x, int y, Tile tile) {
@@ -61,12 +65,14 @@ public final class Level {
             throw new IndexOutOfBoundsException("Cell index out of bounds");
         }
         board[y][x] = tile;
+        active[y][x] = true;
     }
     
     public void reset() {
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
-                board[y][x] = new FloorTile(); 
+                board[y][x] = new FloorTile();
+                active[y][x] = false;
             }
         }
         walls.clear();

@@ -94,10 +94,13 @@ public class Game
         positionX = x;
         positionY = y;
         
-        // al aterrizar, interactuamos con la casilla de destino (para que se ilumine o recojamos un objeto)
+
         Tile destTile = level.getTile(x, y);
-        destTile.onStep(this);
-        
+        if (!(destTile instanceof TeleportTile)) {
+            destTile.onStep(this);
+        } else {
+            destTile.setLit(true);
+        }
     }
 
     public void loadLevel(int levelNumber) {

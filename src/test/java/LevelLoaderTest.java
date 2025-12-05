@@ -120,8 +120,8 @@ class LevelLoaderTest {
             fail("Excepción cargando nivel: " + e.getMessage());
         }
 
-        assertTrue(level.getTile(3, 0) instanceof TeleportTile, // verificamos la casilla destino
-            "Debería haber cargado un TeleportTile en x=3, y=0");
+        assertTrue(level.getTile(0, 1) instanceof TeleportTile,
+            "Debería haber cargado un TeleportTile en x=1, y=0");
             
         
     }

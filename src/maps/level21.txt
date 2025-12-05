@@ -8,7 +8,7 @@ X X X X X X X X X O X X X X X X X X X X
 X X X X X X X X X O X X X X X X X X X X
 X X X X X X X X X O X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
-X X X X X X X X X O X X X X X X X X X X
+X X X X X X X X X T X X X X X X X X X X
 X X X X X X X X X O X X X X X X X X X X
 X X X X X X X X X S X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
@@ -18,6 +18,6 @@ X X X X X X X X X X X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
 X X X X X X X X X X X X X X X X X X X X
-#WALLS
-#TELEPORT
+# WALLS
+# TELEPORT
 10,9,8,9

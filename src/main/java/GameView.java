@@ -30,6 +30,7 @@ public class GameView {
                     case 'E' -> 'E'; // Exit
                     case 'W' -> '!'; // Fuego activo
                     case 'f' -> '.'; // Fuego apagado
+                    case 'T' -> '.'; // Teleport oculto
                     default -> '?';
                 };
                 
