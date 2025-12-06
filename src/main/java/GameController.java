@@ -1,119 +1,144 @@
-public class GameController {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class GameController implements KeyListener {
     private final Game game;
     private final GameView view;
-    private boolean isLevelRunning;
+    private Timer gameLoopTimer;
     private int currentLevelNumber;
+    private boolean isGameActive = false;
 
     public GameController(Game game, GameView view) {
         this.game = game;
         this.view = view;
+        
+        // Añadir el controlador como listener de las teclas en la vista
+        this.view.addKeyListener(this);
+        
+        // Configurar el bucle del juego (aprox 60 FPS)
+        // Cada 16ms se ejecuta el código dentro del ActionListener
+        gameLoopTimer = new Timer(16, e -> updateGameLoop());
     }
 
     public void startGame() {
-        currentLevelNumber = view.askForLevel();
-        
-        boolean appRunning = true;
+        // Crear la ventana principal (JFrame) que alojará la View
+        JFrame frame = new JFrame("LightyRoom");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(view);
+        frame.pack();
+        frame.setLocationRelativeTo(null); // Centrar en pantalla
+        frame.setVisible(true);
 
-        while (appRunning) {
-            playLevel(currentLevelNumber);
-
-            GameStatus status = game.getStatus();
-            if (status == GameStatus.WON) {
-                if (currentLevelNumber >= 5) {
-                    view.displayMessage("¡FELICIDADES! ¡HAS COMPLETADO TODOS LOS NIVELES!");
-                    appRunning = false;
-                } else {
-                    char choice = view.askEndGameOption(true);
-                    if (choice == 's') {
-                        currentLevelNumber++; // si el jugador ha ganado y quiere seguir, avanza al siguiente nivel
-                    } else {
-                        appRunning = false; // sino, se sale
-                    }
-                }
-            } else { // si ha perdido
-                char choice = view.askEndGameOption(false);
-                if (choice == 'r') {
-                } else {
-                    appRunning = false;
-                }
-            }
-        }
+        // Pedir nivel inicial
+        int selectedLevel = view.askForLevel();
+        if (selectedLevel < 1) System.exit(0); // Si cierra el diálogo
         
-        view.displayMessage("¡Gracias por jugar a LightyRoom!");
+        currentLevelNumber = selectedLevel;
+        startLevel(currentLevelNumber);
     }
 
-    private void playLevel(int levelNum) {
+    private void startLevel(int levelNum) {
         game.loadLevel(levelNum);
-        isLevelRunning = true;
-        
-        long lastTime = System.currentTimeMillis();
-
-        while (isLevelRunning) {
-            view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-            
-            checkGameStatus(); 
-            if (!isLevelRunning) break; 
-
-            long currentTime = System.currentTimeMillis();
-            double deltaTime = (currentTime - lastTime) / 1000.0;
-            lastTime = currentTime;
-
-            game.updateWorld(deltaTime);
-
-            // control especial para muerte por tiempo (fuego)
-            if (game.getStatus() == GameStatus.LOST_FIRE) {
-                view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                view.displayMessage("¡TE HAS QUEMADO! (El fuego cambió mientras pensabas)");
-                isLevelRunning = false;
-                break;
-            }
-
-            char input = view.getInput();
-            processInput(input);
-        }
+        isGameActive = true;
+        gameLoopTimer.start();
+        view.requestFocusInWindow(); // Asegurar foco para teclado
     }
 
-    private void processInput(char input) {
-        switch (input) {
-            case 'w' -> game.movePlayer(Direction.UP);
-            case 's' -> game.movePlayer(Direction.DOWN);
-            case 'a' -> game.movePlayer(Direction.LEFT);
-            case 'd' -> game.movePlayer(Direction.RIGHT);
-            case 'r' -> {
-                view.displayMessage("Reiniciando nivel...");
-                game.loadLevel(currentLevelNumber);
-            }
-            case 'q' -> {
-                view.displayMessage("Saliendo al menú...");
-                game.setStatus(GameStatus.LOST_INCOMPLETE);
-                isLevelRunning = false;
-            }
-            case ' ' -> { /* por ahora se espera, más adelante se eliminará */ }
-        }
+    // Este método se ejecuta 60 veces por segundo
+    private void updateGameLoop() {
+        if (!isGameActive) return;
+
+        // 1. Actualizar el modelo (Fuego, etc.)
+        // Pasamos el tiempo fijo del frame en segundos (0.016s)
+        game.updateWorld(0.016); 
+
+        // 2. Verificar estado del juego
+        checkGameStatus();
+
+        // 3. Actualizar la vista
+        view.updateData(game.getLevel(), game.getPlayerX(), game.getPlayerY());
     }
 
     private void checkGameStatus() {
         GameStatus status = game.getStatus();
         
-        switch (status) {
-            case WON -> {
-                view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                view.displayMessage("¡NIVEL " + currentLevelNumber + " COMPLETADO!");
-                isLevelRunning = false; 
-            }
-            case LOST_OVERHEAT -> {
-                view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                view.displayMessage("GAME OVER: ¡Has pisado una casilla ya iluminada!");
-                isLevelRunning = false;
-            }
-            case LOST_INCOMPLETE -> {
-                if (isLevelRunning) { 
-                    view.render(game.getLevel(), game.getPlayerX(), game.getPlayerY());
-                    view.displayMessage("GAME OVER: Llegaste al final pero te dejaste luces apagadas.");
-                    isLevelRunning = false;
-                }
-            }
-            // LOST_FIRE ya se maneja en el loop principal
+        if (status == GameStatus.PLAYING) return;
+
+        // Si el estado no es PLAYING, detenemos el loop un momento
+        gameLoopTimer.stop();
+        isGameActive = false;
+
+        // Actualizamos vista una última vez para ver la causa de muerte/victoria
+        view.updateData(game.getLevel(), game.getPlayerX(), game.getPlayerY());
+
+        if (status == GameStatus.WON) {
+            handleWin();
+        } else {
+            handleLoss(status);
         }
     }
+
+    private void handleWin() {
+        if (currentLevelNumber >= 5 && currentLevelNumber != 21) {
+            view.showMessage("¡FELICIDADES! ¡JUEGO COMPLETADO!");
+            System.exit(0);
+        } else {
+            char choice = view.askEndGameOption(true);
+            if (choice == 's') {
+                currentLevelNumber++;
+                startLevel(currentLevelNumber);
+            } else {
+                System.exit(0);
+            }
+        }
+    }
+
+    private void handleLoss(GameStatus status) {
+        String msg = switch (status) {
+            case LOST_FIRE -> "¡TE HAS QUEMADO!";
+            case LOST_OVERHEAT -> "¡SOBRECALENTAMIENTO! Pisaste luz.";
+            case LOST_INCOMPLETE -> "¡INCOMPLETO! Faltan luces.";
+            default -> "GAME OVER";
+        };
+        
+        view.showMessage(msg);
+        char choice = view.askEndGameOption(false);
+        if (choice == 'r') {
+            startLevel(currentLevelNumber); // Reiniciar mismo nivel
+        } else {
+            System.exit(0);
+        }
+    }
+
+    // --- Manejo de Teclado (KeyListener) ---
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (!isGameActive) return;
+
+        int key = e.getKeyCode();
+        boolean moved = false;
+
+        switch (key) {
+            case KeyEvent.VK_W, KeyEvent.VK_UP -> moved = game.movePlayer(Direction.UP);
+            case KeyEvent.VK_S, KeyEvent.VK_DOWN -> moved = game.movePlayer(Direction.DOWN);
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> moved = game.movePlayer(Direction.LEFT);
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> moved = game.movePlayer(Direction.RIGHT);
+            case KeyEvent.VK_R -> {
+                startLevel(currentLevelNumber);
+                return;
+            }
+            case KeyEvent.VK_Q -> System.exit(0);
+        }
+        
+        // No necesitamos repintar aquí explícitamente porque el Timer lo hará en el siguiente frame
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+    @Override
+    public void keyReleased(KeyEvent e) {}
 }
